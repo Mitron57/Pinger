@@ -10,7 +10,8 @@ type Config struct {
 }
 
 type App struct {
-    Api string `yaml:"api"`
+    Period int    `yaml:"period"`
+    Api    string `yaml:"api"`
 }
 
 func ParseConfig(path string) (*Config, error) {

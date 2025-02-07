@@ -27,6 +27,7 @@ type Pinger struct {
     handler handlers.Streamer
     client  *client.Client
     logger  *zap.Logger
+    period  time.Duration
 }
 
 func initDockerClient() *client.Client {
@@ -46,6 +47,7 @@ func InitPinger(cfgPath string) *Pinger {
     if err != nil {
         log.Fatal(err)
     }
+    period := time.Duration(cfg.Pinger.Period) * time.Second
     logger := zap.Must(zap.NewProduction())
     handler := http.NewHttpStreamer(link, logger)
     poller := serviceImpl.NewPoller(handler)
@@ -55,6 +57,7 @@ func InitPinger(cfgPath string) *Pinger {
         handler: handler,
         client:  dockerClient,
         logger:  logger,
+        period:  period,
     }
 }
 
@@ -87,7 +90,7 @@ func (p *Pinger) poll(ctx context.Context, containers chan *types.Container, wg 
 }
 
 func (p *Pinger) mainLoop(ctx context.Context, containers chan *types.Container) error {
-    ticker := time.Tick(time.Second * 10)
+    ticker := time.Tick(p.period)
 loop:
     for {
         select {

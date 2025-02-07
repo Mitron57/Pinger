@@ -1,2 +1,3 @@
 pinger:
+  period: 10
   api: http://dockmon:8080/api/machine
