@@ -1,0 +1,2 @@
+pinger:
+  api: http://dockmon:8080/api/machine
